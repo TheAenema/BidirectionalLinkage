@@ -5,13 +5,15 @@
 // Macros
 #define log(fmt,...) printf(fmt "\n",__VA_ARGS__);
 
-// Import From DLL
-extern "C" __declspec(dllimport) void SomeLibraryFunction();
-
 // Entrypoint
 int main() 
 {
 	log("Program : Executing Library...");
+	HMODULE lib = LoadLibrary(L"X30Library");
+	if (!lib) return EXIT_FAILURE;
+	typedef void(*SomeLibraryFunctionFunc)(void);
+	auto SomeLibraryFunction = (SomeLibraryFunctionFunc)GetProcAddress(lib, "SomeLibraryFunction");
+	if (!SomeLibraryFunction) return EXIT_FAILURE;
 	SomeLibraryFunction();
 	log("Program : END");
 	system("pause");
